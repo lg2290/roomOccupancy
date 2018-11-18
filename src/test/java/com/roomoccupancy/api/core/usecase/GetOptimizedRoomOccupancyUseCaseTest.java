@@ -56,6 +56,26 @@ public class GetOptimizedRoomOccupancyUseCaseTest {
 	}
 
 	@Test
+	public void getOptimizedRoomOccupancy_negativeNumberOfFreeEconomyRooms_throwBusinessException() {
+		Integer numberOfFreePremiumRooms = 1;
+		Integer numberOfFreeEconomyRooms = -1;
+
+		callOptimizedRoomOccupancyAndAssertBusinessException(numberOfFreePremiumRooms, numberOfFreeEconomyRooms,
+				POTENTIAL_GUESTS, "The number of free Economic rooms must be zero or greater.");
+
+	}
+
+	@Test
+	public void getOptimizedRoomOccupancy_negativeNumberOfFreePremiumRooms_throwBusinessException() {
+		Integer numberOfFreePremiumRooms = -1;
+		Integer numberOfFreeEconomyRooms = 1;
+
+		callOptimizedRoomOccupancyAndAssertBusinessException(numberOfFreePremiumRooms, numberOfFreeEconomyRooms,
+				POTENTIAL_GUESTS, "The number of free Premium rooms must be zero or greater.");
+
+	}
+
+	@Test
 	public void getOptimizedRoomOccupancy_0PremiumAnd3EconomyFree_0PremiunAnd3EconomyUsage() {
 		Integer expectedPremiumRoomsOccupied = 0;
 		Integer expectedPremiumRoomsIncome = 0;
