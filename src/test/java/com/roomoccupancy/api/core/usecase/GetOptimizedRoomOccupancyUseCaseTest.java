@@ -1,10 +1,13 @@
 package com.roomoccupancy.api.core.usecase;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.roomoccupancy.api.core.entity.OptimizedRoomOccupancyEntity;
 import com.roomoccupancy.api.core.entity.RoomCategoryOccupancyEntity;
+import com.roomoccupancy.api.core.exception.BusinessException;
 
 /**
  * Unit tests for {@link GetOptimizedRoomOccupancyUseCase}
@@ -17,6 +20,40 @@ public class GetOptimizedRoomOccupancyUseCaseTest {
 	private static final Integer[] POTENTIAL_GUESTS = { 23, 45, 155, 374, 22, 99, 100, 101, 115, 209 };
 
 	private GetOptimizedRoomOccupancyUseCase occupancyUseCase = new GetOptimizedRoomOccupancyUseCase();
+
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+
+	@Test
+	public void getOptimizedRoomOccupancy_nullPotentialGuestsArray_throwBusinessException() {
+		Integer numberOfFreePremiumRooms = 1;
+		Integer numberOfFreeEconomyRooms = 1;
+		Integer[] potencialGuests = null;
+
+		callOptimizedRoomOccupancyAndAssertBusinessException(numberOfFreePremiumRooms, numberOfFreeEconomyRooms,
+				potencialGuests, "The potential guests array is required.");
+
+	}
+
+	@Test
+	public void getOptimizedRoomOccupancy_nullNumberOfFreeEconomyRooms_throwBusinessException() {
+		Integer numberOfFreePremiumRooms = 1;
+		Integer numberOfFreeEconomyRooms = null;
+
+		callOptimizedRoomOccupancyAndAssertBusinessException(numberOfFreePremiumRooms, numberOfFreeEconomyRooms,
+				POTENTIAL_GUESTS, "The number of free Economic rooms is required.");
+
+	}
+
+	@Test
+	public void getOptimizedRoomOccupancy_nullNumberOfFreePremiumRooms_throwBusinessException() {
+		Integer numberOfFreePremiumRooms = null;
+		Integer numberOfFreeEconomyRooms = 1;
+
+		callOptimizedRoomOccupancyAndAssertBusinessException(numberOfFreePremiumRooms, numberOfFreeEconomyRooms,
+				POTENTIAL_GUESTS, "The number of free Premium rooms is required.");
+
+	}
 
 	@Test
 	public void getOptimizedRoomOccupancy_0PremiumAnd3EconomyFree_0PremiunAnd3EconomyUsage() {
@@ -140,6 +177,14 @@ public class GetOptimizedRoomOccupancyUseCaseTest {
 				expectedPremiumRoomsOccupied);
 		Assert.assertEquals(expectedRoomOccupancy.getPremiumOccupancy().getGeneratedIncome(),
 				expectedPremiumRoomsIncome);
+	}
+
+	private void callOptimizedRoomOccupancyAndAssertBusinessException(Integer numberOfFreePremiumRooms,
+			Integer numberOfFreeEconomyRooms, Integer[] potencialGuests, String expectedExceptionMessage) {
+
+		expectedException.expectMessage(expectedExceptionMessage);
+		expectedException.expect(BusinessException.class);
+		occupancyUseCase.getOptimizedRoomOccupancy(numberOfFreePremiumRooms, numberOfFreeEconomyRooms, potencialGuests);
 	}
 
 }
