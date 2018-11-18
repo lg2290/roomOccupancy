@@ -3,12 +3,14 @@ package com.roomoccupancy.api.core.usecase;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.roomoccupancy.api.core.entity.OptimizedRoomOccupancyEntity;
 import com.roomoccupancy.api.core.entity.RoomCategoryOccupancyEntity;
+import com.roomoccupancy.api.core.exception.BusinessException;
 
 /**
  * Contains the business logic to make the best division of the rooms between
@@ -24,10 +26,26 @@ public class GetOptimizedRoomOccupancyUseCase {
 
 	private static final Integer ZERO = 0;
 
+	private static final String ERROR_NULL_POTENTIAL_GUESTS_ARRAY = "The potential guests array is required.";
+
+	private static final String ERROR_NULL_FREE_ECONOMIC_ROOMS = "The number of free Economic rooms is required.";
+
+	private static final String ERROR_NULL_FREE_PREMIUM_ROOMS = "The number of free Premium rooms is required.";
+
+	/**
+	 * 
+	 * @param numberOfFreePremiumRooms
+	 * @param numberOfFreeEconomyRooms
+	 * @param potencialGuests
+	 * @return
+	 * @throws BusinessException
+	 */
 	public OptimizedRoomOccupancyEntity getOptimizedRoomOccupancy(Integer numberOfFreePremiumRooms,
 			Integer numberOfFreeEconomyRooms, Integer[] potencialGuests) {
-		List<Integer> orderedPotencialGuests = Arrays.asList(potencialGuests);
-		orderedPotencialGuests.sort(Collections.reverseOrder());
+
+		validateFreeRoomsParameters(numberOfFreePremiumRooms, numberOfFreeEconomyRooms);
+
+		List<Integer> orderedPotencialGuests = validatePotentialGuestsAndGetAsOrderedList(potencialGuests);
 
 		RoomCategoryOccupancyEntity premiumRoomsOccupancy = getRoomOccupancyFromPotencialGuests(orderedPotencialGuests,
 				numberOfFreePremiumRooms);
@@ -36,6 +54,27 @@ public class GetOptimizedRoomOccupancyUseCase {
 				numberOfFreeEconomyRooms, premiumRoomsOccupancy.getNumberOfOccupiedRooms());
 
 		return new OptimizedRoomOccupancyEntity(premiumRoomsOccupancy, economyRoomsOccupancy);
+	}
+
+	private void validateFreeRoomsParameters(Integer numberOfFreePremiumRooms, Integer numberOfFreeEconomyRooms) {
+		if (Objects.isNull(numberOfFreeEconomyRooms)) {
+			throw new BusinessException(ERROR_NULL_FREE_ECONOMIC_ROOMS);
+		}
+
+		if (Objects.isNull(numberOfFreePremiumRooms)) {
+			throw new BusinessException(ERROR_NULL_FREE_PREMIUM_ROOMS);
+		}
+	}
+
+	private List<Integer> validatePotentialGuestsAndGetAsOrderedList(Integer[] potencialGuests) {
+		if (Objects.isNull(potencialGuests)) {
+			throw new BusinessException(ERROR_NULL_POTENTIAL_GUESTS_ARRAY);
+		}
+
+		List<Integer> potencialGuestsList = Arrays.asList(potencialGuests);
+		potencialGuestsList.sort(Collections.reverseOrder());
+
+		return potencialGuestsList;
 	}
 
 	private RoomCategoryOccupancyEntity getRoomOccupancyForEconomyGuests(List<Integer> orderedPotencialGuests,
