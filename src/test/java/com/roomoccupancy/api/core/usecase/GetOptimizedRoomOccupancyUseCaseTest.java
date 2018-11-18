@@ -76,6 +76,23 @@ public class GetOptimizedRoomOccupancyUseCaseTest {
 	}
 
 	@Test
+	public void getOptimizedRoomOccupancy_emptyPotentialGuestsArray_0PremiunAnd0EconomyUsage() {
+		Integer expectedPremiumRoomsOccupied = 0;
+		Integer expectedPremiumRoomsIncome = 0;
+
+		Integer expectedEconomyRoomsOccupied = 0;
+		Integer expectedEconomyRoomsIncome = 0;
+
+		Integer numberOfFreePremiumRooms = 3;
+		Integer numberOfFreeEconomyRooms = 3;
+		Integer[] potentialGuests = {};
+
+		callOptimizedRoomOccupancyAndAssertResult(expectedPremiumRoomsOccupied, expectedPremiumRoomsIncome,
+				expectedEconomyRoomsOccupied, expectedEconomyRoomsIncome, numberOfFreePremiumRooms,
+				numberOfFreeEconomyRooms, potentialGuests);
+	}
+
+	@Test
 	public void getOptimizedRoomOccupancy_0PremiumAnd3EconomyFree_0PremiunAnd3EconomyUsage() {
 		Integer expectedPremiumRoomsOccupied = 0;
 		Integer expectedPremiumRoomsIncome = 0;
@@ -174,6 +191,15 @@ public class GetOptimizedRoomOccupancyUseCaseTest {
 	private void callOptimizedRoomOccupancyAndAssertResult(Integer expectedPremiumRoomsOccupied,
 			Integer expectedPremiumRoomsIncome, Integer expectedEconomyRoomsOccupied,
 			Integer expectedEconomyRoomsIncome, Integer numberOfFreePremiumRooms, Integer numberOfFreeEconomyRooms) {
+		callOptimizedRoomOccupancyAndAssertResult(expectedPremiumRoomsOccupied, expectedPremiumRoomsIncome,
+				expectedEconomyRoomsOccupied, expectedEconomyRoomsIncome, numberOfFreePremiumRooms,
+				numberOfFreeEconomyRooms, POTENTIAL_GUESTS);
+	}
+
+	private void callOptimizedRoomOccupancyAndAssertResult(Integer expectedPremiumRoomsOccupied,
+			Integer expectedPremiumRoomsIncome, Integer expectedEconomyRoomsOccupied,
+			Integer expectedEconomyRoomsIncome, Integer numberOfFreePremiumRooms, Integer numberOfFreeEconomyRooms,
+			Integer[] potentialGuests) {
 		RoomCategoryOccupancyEntity premiumRoomOccupancy = new RoomCategoryOccupancyEntity(expectedPremiumRoomsOccupied,
 				expectedPremiumRoomsIncome);
 
@@ -184,7 +210,7 @@ public class GetOptimizedRoomOccupancyUseCaseTest {
 				economyRoomOccupancy);
 
 		OptimizedRoomOccupancyEntity roomOccupancy = occupancyUseCase
-				.getOptimizedRoomOccupancy(numberOfFreePremiumRooms, numberOfFreeEconomyRooms, POTENTIAL_GUESTS);
+				.getOptimizedRoomOccupancy(numberOfFreePremiumRooms, numberOfFreeEconomyRooms, potentialGuests);
 
 		Assert.assertNotNull(roomOccupancy);
 		Assert.assertNotNull(roomOccupancy.getEconomyOccupancy());
