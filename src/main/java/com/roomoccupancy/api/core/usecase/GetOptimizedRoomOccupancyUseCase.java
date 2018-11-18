@@ -14,7 +14,8 @@ import com.roomoccupancy.api.core.entity.OptimizedRoomOccupancyEntity;
 @Service
 public class GetOptimizedRoomOccupancyUseCase {
 
-	public OptimizedRoomOccupancyEntity getOptimizedRoomOccupancy() {
+	public OptimizedRoomOccupancyEntity getOptimizedRoomOccupancy(Integer numberOfFreePremiumRooms,
+			Integer numberOfFreeEconomyRooms, Integer[] potencialGuests) {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
