@@ -19,8 +19,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OptimizedRoomOccupancyEntity {
 
-	private RoomCategoryOccupancy premiumOccupancy;
+	private RoomCategoryOccupancyEntity premiumOccupancy;
 
-	private RoomCategoryOccupancy economyOccupancy;
+	private RoomCategoryOccupancyEntity economyOccupancy;
 
 }

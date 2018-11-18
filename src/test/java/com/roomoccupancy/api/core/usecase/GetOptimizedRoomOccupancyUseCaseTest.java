@@ -8,4 +8,6 @@ package com.roomoccupancy.api.core.usecase;
  */
 public class GetOptimizedRoomOccupancyUseCaseTest {
 
+	private GetOptimizedRoomOccupancyUseCase occupancyUseCase = new GetOptimizedRoomOccupancyUseCase();
+
 }

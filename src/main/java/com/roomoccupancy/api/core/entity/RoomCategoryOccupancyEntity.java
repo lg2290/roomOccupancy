@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomCategoryOccupancy {
+public class RoomCategoryOccupancyEntity {
 
 	private Integer numberOfOccupiedRooms;
 
