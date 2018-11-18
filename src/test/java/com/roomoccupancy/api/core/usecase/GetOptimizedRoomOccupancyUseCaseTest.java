@@ -1,6 +1,5 @@
 package com.roomoccupancy.api.core.usecase;
 
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -41,7 +40,16 @@ public class GetOptimizedRoomOccupancyUseCaseTest {
 				.getOptimizedRoomOccupancy(numberOfFreePremiumRooms, numberOfFreeEconomyRooms, POTENTIAL_GUESTS);
 
 		Assert.assertNotNull(roomOccupancy);
-		Assert.assertThat(roomOccupancy, Matchers.samePropertyValuesAs(expectedRoomOccupancy));
+		Assert.assertNotNull(roomOccupancy.getEconomyOccupancy());
+		Assert.assertEquals(expectedRoomOccupancy.getEconomyOccupancy().getNumberOfOccupiedRooms(),
+				expectedEconomyRoomsOccupied);
+		Assert.assertEquals(expectedRoomOccupancy.getEconomyOccupancy().getGeneratedIncome(),
+				expectedEconomyRoomsIncome);
+		Assert.assertNotNull(roomOccupancy.getPremiumOccupancy());
+		Assert.assertEquals(expectedRoomOccupancy.getPremiumOccupancy().getNumberOfOccupiedRooms(),
+				expectedPremiumRoomsOccupied);
+		Assert.assertEquals(expectedRoomOccupancy.getPremiumOccupancy().getGeneratedIncome(),
+				expectedPremiumRoomsIncome);
 	}
 
 	@Test
@@ -66,7 +74,16 @@ public class GetOptimizedRoomOccupancyUseCaseTest {
 				.getOptimizedRoomOccupancy(numberOfFreePremiumRooms, numberOfFreeEconomyRooms, POTENTIAL_GUESTS);
 
 		Assert.assertNotNull(roomOccupancy);
-		Assert.assertThat(roomOccupancy, Matchers.samePropertyValuesAs(expectedRoomOccupancy));
+		Assert.assertNotNull(roomOccupancy.getEconomyOccupancy());
+		Assert.assertEquals(expectedRoomOccupancy.getEconomyOccupancy().getNumberOfOccupiedRooms(),
+				expectedEconomyRoomsOccupied);
+		Assert.assertEquals(expectedRoomOccupancy.getEconomyOccupancy().getGeneratedIncome(),
+				expectedEconomyRoomsIncome);
+		Assert.assertNotNull(roomOccupancy.getPremiumOccupancy());
+		Assert.assertEquals(expectedRoomOccupancy.getPremiumOccupancy().getNumberOfOccupiedRooms(),
+				expectedPremiumRoomsOccupied);
+		Assert.assertEquals(expectedRoomOccupancy.getPremiumOccupancy().getGeneratedIncome(),
+				expectedPremiumRoomsIncome);
 	}
 
 	@Test
@@ -91,7 +108,16 @@ public class GetOptimizedRoomOccupancyUseCaseTest {
 				.getOptimizedRoomOccupancy(numberOfFreePremiumRooms, numberOfFreeEconomyRooms, POTENTIAL_GUESTS);
 
 		Assert.assertNotNull(roomOccupancy);
-		Assert.assertThat(roomOccupancy, Matchers.samePropertyValuesAs(expectedRoomOccupancy));
+		Assert.assertNotNull(roomOccupancy.getEconomyOccupancy());
+		Assert.assertEquals(expectedRoomOccupancy.getEconomyOccupancy().getNumberOfOccupiedRooms(),
+				expectedEconomyRoomsOccupied);
+		Assert.assertEquals(expectedRoomOccupancy.getEconomyOccupancy().getGeneratedIncome(),
+				expectedEconomyRoomsIncome);
+		Assert.assertNotNull(roomOccupancy.getPremiumOccupancy());
+		Assert.assertEquals(expectedRoomOccupancy.getPremiumOccupancy().getNumberOfOccupiedRooms(),
+				expectedPremiumRoomsOccupied);
+		Assert.assertEquals(expectedRoomOccupancy.getPremiumOccupancy().getGeneratedIncome(),
+				expectedPremiumRoomsIncome);
 	}
 
 	@Test
@@ -116,7 +142,16 @@ public class GetOptimizedRoomOccupancyUseCaseTest {
 				.getOptimizedRoomOccupancy(numberOfFreePremiumRooms, numberOfFreeEconomyRooms, POTENTIAL_GUESTS);
 
 		Assert.assertNotNull(roomOccupancy);
-		Assert.assertThat(roomOccupancy, Matchers.samePropertyValuesAs(expectedRoomOccupancy));
+		Assert.assertNotNull(roomOccupancy.getEconomyOccupancy());
+		Assert.assertEquals(expectedRoomOccupancy.getEconomyOccupancy().getNumberOfOccupiedRooms(),
+				expectedEconomyRoomsOccupied);
+		Assert.assertEquals(expectedRoomOccupancy.getEconomyOccupancy().getGeneratedIncome(),
+				expectedEconomyRoomsIncome);
+		Assert.assertNotNull(roomOccupancy.getPremiumOccupancy());
+		Assert.assertEquals(expectedRoomOccupancy.getPremiumOccupancy().getNumberOfOccupiedRooms(),
+				expectedPremiumRoomsOccupied);
+		Assert.assertEquals(expectedRoomOccupancy.getPremiumOccupancy().getGeneratedIncome(),
+				expectedPremiumRoomsIncome);
 	}
 
 }
