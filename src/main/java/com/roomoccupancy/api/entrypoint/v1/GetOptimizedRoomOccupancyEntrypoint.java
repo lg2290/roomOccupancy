@@ -1,7 +1,13 @@
 package com.roomoccupancy.api.entrypoint.v1;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.roomoccupancy.api.core.entity.OptimizedRoomOccupancyEntity;
+import com.roomoccupancy.api.core.usecase.GetOptimizedRoomOccupancyUseCase;
 import com.roomoccupancy.api.entrypoint.v1.entity.GetOptimizedRoomOccupancyResponse;
 
 /**
@@ -10,12 +16,21 @@ import com.roomoccupancy.api.entrypoint.v1.entity.GetOptimizedRoomOccupancyRespo
  * @author luis
  *
  */
+@RestController
 public class GetOptimizedRoomOccupancyEntrypoint {
 
-	public ResponseEntity<GetOptimizedRoomOccupancyResponse> getOptimizedRoomOccupancy(Integer numberOfFreePremiumRooms,
-			Integer numberOfFreeEconomyRooms, Integer[] potencialGuests) {
+	@Autowired
+	GetOptimizedRoomOccupancyUseCase occupancyUseCase;
 
-		return null;
+	@GetMapping("/v1/rooms/optimizeOccupancy")
+	public ResponseEntity<GetOptimizedRoomOccupancyResponse> getOptimizedRoomOccupancy(
+			@RequestParam(name = "freePremiumRooms") Integer numberOfFreePremiumRooms,
+			@RequestParam(name = "freeEconomyRooms") Integer numberOfFreeEconomyRooms, Integer[] potencialGuests) {
+
+		OptimizedRoomOccupancyEntity optimizedOccupancy = occupancyUseCase
+				.getOptimizedRoomOccupancy(numberOfFreePremiumRooms, numberOfFreeEconomyRooms, potencialGuests);
+
+		return ResponseEntity.ok(GetOptimizedRoomOccupancyResponse.of(optimizedOccupancy));
 	}
 
 }
