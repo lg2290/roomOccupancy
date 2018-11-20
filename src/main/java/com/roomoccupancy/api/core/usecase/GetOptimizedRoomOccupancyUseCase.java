@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -59,11 +58,25 @@ public class GetOptimizedRoomOccupancyUseCase {
 
 		List<Integer> orderedPotencialGuests = validatePotentialGuestsAndGetAsOrderedList(potencialGuests);
 
-		RoomCategoryOccupancyEntity premiumRoomsOccupancy = getRoomOccupancyFromPotencialGuests(orderedPotencialGuests,
-				numberOfFreePremiumRooms);
+		Integer numberOfPotentialEconomyGuests = ((Long) orderedPotencialGuests.stream()
+				.filter(this::isPotentialGuestForEconomyRoom).count()).intValue();
+
+		Integer numberOfEconomyGuests = Math.min(numberOfFreeEconomyRooms, numberOfPotentialEconomyGuests);
+
+		Integer numberOfPotentialPremiumGuests = potencialGuests.length - numberOfPotentialEconomyGuests;
+
+		Integer numberOfPotentialEconomyGuestsWithoutRoom = numberOfPotentialEconomyGuests - numberOfEconomyGuests;
+
+		Integer numberOfPremiumGuests = getNumberOfPremiumGuests(numberOfFreePremiumRooms,
+				numberOfPotentialPremiumGuests, numberOfPotentialEconomyGuestsWithoutRoom);
+
+		RoomCategoryOccupancyEntity premiumRoomsOccupancy = getRoomOccupancyForPremiumGuests(orderedPotencialGuests,
+				numberOfPremiumGuests.intValue());
+
+		Integer numberOfGuestsForPremiumRooms = Math.max(numberOfPremiumGuests, numberOfPotentialPremiumGuests);
 
 		RoomCategoryOccupancyEntity economyRoomsOccupancy = getRoomOccupancyForEconomyGuests(orderedPotencialGuests,
-				numberOfFreeEconomyRooms, premiumRoomsOccupancy.getNumberOfOccupiedRooms());
+				numberOfEconomyGuests, numberOfGuestsForPremiumRooms);
 
 		return new OptimizedRoomOccupancyEntity(premiumRoomsOccupancy, economyRoomsOccupancy);
 	}
@@ -99,27 +112,42 @@ public class GetOptimizedRoomOccupancyUseCase {
 		return potencialGuestsList;
 	}
 
-	private RoomCategoryOccupancyEntity getRoomOccupancyForEconomyGuests(List<Integer> orderedPotencialGuests,
-			Integer numberOfFreeEconomyRooms, Integer numberOfOccupiedPremiumRooms) {
-		List<Integer> potencialEconomyGuests = Collections.emptyList();
-
-		if (orderedPotencialGuests.size() > numberOfOccupiedPremiumRooms) {
-			potencialEconomyGuests = orderedPotencialGuests
-					.subList(numberOfFreeEconomyRooms, orderedPotencialGuests.size()).stream()
-					.filter(g -> PREMIUM_ROOM_MINIMUN_NIGHT_VALUE.compareTo(g) > ZERO).collect(Collectors.toList());
-		}
-
-		return getRoomOccupancyFromPotencialGuests(potencialEconomyGuests, numberOfFreeEconomyRooms);
+	private boolean isPotentialGuestForEconomyRoom(Integer guestOffer) {
+		return PREMIUM_ROOM_MINIMUN_NIGHT_VALUE.compareTo(guestOffer) > 0;
 	}
 
-	private RoomCategoryOccupancyEntity getRoomOccupancyFromPotencialGuests(List<Integer> potencialGuestsValue,
-			Integer numberOfFreeRooms) {
-		if (potencialGuestsValue.size() > numberOfFreeRooms) {
-			potencialGuestsValue = potencialGuestsValue.subList(ZERO, numberOfFreeRooms);
+	private RoomCategoryOccupancyEntity getRoomOccupancyForPremiumGuests(List<Integer> orderedPotencialGuests,
+			Integer numberOfPremiumGuests) {
+		List<Integer> premiumRoomsGuests = orderedPotencialGuests.subList(0, numberOfPremiumGuests);
+
+		return getRoomCategoryOccupancyFromGuests(premiumRoomsGuests);
+	}
+
+	private RoomCategoryOccupancyEntity getRoomOccupancyForEconomyGuests(List<Integer> orderedPotencialGuests,
+			Integer numberOfEconomyGuests, Integer numberOfGuestsForPremiumRooms) {
+
+		List<Integer> economyRoomsGuests = orderedPotencialGuests.subList(numberOfGuestsForPremiumRooms,
+				numberOfGuestsForPremiumRooms + numberOfEconomyGuests);
+
+		return getRoomCategoryOccupancyFromGuests(economyRoomsGuests);
+	}
+
+	private RoomCategoryOccupancyEntity getRoomCategoryOccupancyFromGuests(List<Integer> guests) {
+		return new RoomCategoryOccupancyEntity(guests.size(), guests.stream().mapToInt(Integer::intValue).sum());
+	}
+
+	private Integer getNumberOfPremiumGuests(Integer numberOfFreePremiumRooms, Integer numberOfPotentialPremiumGuests,
+			Integer numberOfPotentialEconomyGuestsWithoutRoom) {
+		Integer numberOfPremiumGuests = Math.min(numberOfFreePremiumRooms, numberOfPotentialPremiumGuests);
+
+		Integer numberOfPremiumRoomsAvailableForEconomyGuests = numberOfFreePremiumRooms - numberOfPremiumGuests;
+
+		if ((numberOfPotentialEconomyGuestsWithoutRoom > 0) && (numberOfPremiumRoomsAvailableForEconomyGuests > 0)) {
+			numberOfPremiumGuests += Math.min(numberOfPotentialEconomyGuestsWithoutRoom,
+					numberOfPremiumRoomsAvailableForEconomyGuests);
 		}
 
-		return new RoomCategoryOccupancyEntity(potencialGuestsValue.size(),
-				potencialGuestsValue.stream().mapToInt(Integer::intValue).sum());
+		return numberOfPremiumGuests;
 	}
 
 }
