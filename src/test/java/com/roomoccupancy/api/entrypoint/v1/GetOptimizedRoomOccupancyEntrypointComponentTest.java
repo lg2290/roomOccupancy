@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -42,16 +43,6 @@ public class GetOptimizedRoomOccupancyEntrypointComponentTest {
 	private static final String FREE_ECONOMY_ROOMS_PARAMETER_KEY = "freeEconomyRooms";
 
 	private static final String POTENTIAL_GUESTS_PARAMETER_KEY = "potentialGuests";
-
-	private static final String ERROR_NULL_POTENTIAL_GUESTS_ARRAY = "The potential guests array is required.";
-
-	private static final String ERROR_NULL_FREE_ECONOMY_ROOMS = "The number of free Economic rooms is required.";
-
-	private static final String ERROR_NEGATIVE_FREE_ECONOMIC_ROOMS = "The number of free Economic rooms must be zero or greater.";
-
-	private static final String ERROR_NULL_FREE_PREMIUM_ROOMS = "The number of free Premium rooms is required.";
-
-	private static final String ERROR_NEGATIVE_FREE_PREMIUM_ROOMS = "The number of free Premium rooms must be zero or greater.";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -119,7 +110,7 @@ public class GetOptimizedRoomOccupancyEntrypointComponentTest {
 			requestParameters.add(POTENTIAL_GUESTS_PARAMETER_KEY, guestOffer.toString());
 		}
 
-		assertBadRequest(requestParameters, ERROR_NULL_FREE_PREMIUM_ROOMS);
+		assertBadRequest(requestParameters);
 	}
 
 	@Test
@@ -136,7 +127,7 @@ public class GetOptimizedRoomOccupancyEntrypointComponentTest {
 			requestParameters.add(POTENTIAL_GUESTS_PARAMETER_KEY, guestOffer.toString());
 		}
 
-		assertBadRequest(requestParameters, ERROR_NULL_FREE_ECONOMY_ROOMS);
+		assertBadRequest(requestParameters);
 	}
 
 	@Test
@@ -150,13 +141,13 @@ public class GetOptimizedRoomOccupancyEntrypointComponentTest {
 		requestParameters.add(FREE_PREMIUM_ROOMS_PARAMETER_KEY, freePremiumRooms.toString());
 		requestParameters.add(POTENTIAL_GUESTS_PARAMETER_KEY, null);
 
-		assertBadRequest(requestParameters, ERROR_NULL_POTENTIAL_GUESTS_ARRAY);
+		assertBadRequest(requestParameters);
 	}
 
-	private void assertBadRequest(MultiValueMap<String, String> requestParameters, String expectedErrorMessage)
-			throws Exception {
+	private void assertBadRequest(MultiValueMap<String, String> requestParameters) throws Exception {
 		this.mockMvc.perform(get(GET_OPTIMIZED_ROOM_OCCUPANCY_URL).params(requestParameters)).andDo(print())
-				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.error").value(expectedErrorMessage));
+				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.error").isNotEmpty())
+				.andExpect(jsonPath("$.httpStatusCode").value(HttpStatus.BAD_REQUEST.value()));
 	}
 
 }
