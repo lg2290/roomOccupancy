@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.roomoccupancy.api.core.entity.OptimizedRoomOccupancyEntity;
-import com.roomoccupancy.api.core.entity.RoomCategoryOccupancyEntity;
 import com.roomoccupancy.api.core.exception.BusinessException;
 
 /**
@@ -200,29 +199,19 @@ public class GetOptimizedRoomOccupancyUseCaseTest {
 			Integer expectedPremiumRoomsIncome, Integer expectedEconomyRoomsOccupied,
 			Integer expectedEconomyRoomsIncome, Integer numberOfFreePremiumRooms, Integer numberOfFreeEconomyRooms,
 			Integer[] potentialGuests) {
-		RoomCategoryOccupancyEntity premiumRoomOccupancy = new RoomCategoryOccupancyEntity(expectedPremiumRoomsOccupied,
-				expectedPremiumRoomsIncome);
-
-		RoomCategoryOccupancyEntity economyRoomOccupancy = new RoomCategoryOccupancyEntity(expectedEconomyRoomsOccupied,
-				expectedEconomyRoomsIncome);
-
-		OptimizedRoomOccupancyEntity expectedRoomOccupancy = new OptimizedRoomOccupancyEntity(premiumRoomOccupancy,
-				economyRoomOccupancy);
 
 		OptimizedRoomOccupancyEntity roomOccupancy = occupancyUseCase
 				.getOptimizedRoomOccupancy(numberOfFreePremiumRooms, numberOfFreeEconomyRooms, potentialGuests);
 
 		Assert.assertNotNull(roomOccupancy);
 		Assert.assertNotNull(roomOccupancy.getEconomyOccupancy());
-		Assert.assertEquals(expectedRoomOccupancy.getEconomyOccupancy().getNumberOfOccupiedRooms(),
-				expectedEconomyRoomsOccupied);
-		Assert.assertEquals(expectedRoomOccupancy.getEconomyOccupancy().getGeneratedIncome(),
-				expectedEconomyRoomsIncome);
+		Assert.assertEquals(expectedEconomyRoomsOccupied,
+				roomOccupancy.getEconomyOccupancy().getNumberOfOccupiedRooms());
+		Assert.assertEquals(expectedEconomyRoomsIncome, roomOccupancy.getEconomyOccupancy().getGeneratedIncome());
 		Assert.assertNotNull(roomOccupancy.getPremiumOccupancy());
-		Assert.assertEquals(expectedRoomOccupancy.getPremiumOccupancy().getNumberOfOccupiedRooms(),
-				expectedPremiumRoomsOccupied);
-		Assert.assertEquals(expectedRoomOccupancy.getPremiumOccupancy().getGeneratedIncome(),
-				expectedPremiumRoomsIncome);
+		Assert.assertEquals(expectedPremiumRoomsOccupied,
+				roomOccupancy.getPremiumOccupancy().getNumberOfOccupiedRooms());
+		Assert.assertEquals(expectedPremiumRoomsIncome, roomOccupancy.getPremiumOccupancy().getGeneratedIncome());
 	}
 
 	private void callOptimizedRoomOccupancyAndAssertBusinessException(Integer numberOfFreePremiumRooms,
