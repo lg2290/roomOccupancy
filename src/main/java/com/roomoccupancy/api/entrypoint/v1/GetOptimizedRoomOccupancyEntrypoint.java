@@ -25,7 +25,8 @@ public class GetOptimizedRoomOccupancyEntrypoint {
 	@GetMapping("/v1/rooms/optimizeOccupancy")
 	public ResponseEntity<GetOptimizedRoomOccupancyResponse> getOptimizedRoomOccupancy(
 			@RequestParam(name = "freePremiumRooms") Integer numberOfFreePremiumRooms,
-			@RequestParam(name = "freeEconomyRooms") Integer numberOfFreeEconomyRooms, Integer[] potencialGuests) {
+			@RequestParam(name = "freeEconomyRooms") Integer numberOfFreeEconomyRooms,
+			@RequestParam(name = "potentialGuests") Integer[] potencialGuests) {
 
 		OptimizedRoomOccupancyEntity optimizedOccupancy = occupancyUseCase
 				.getOptimizedRoomOccupancy(numberOfFreePremiumRooms, numberOfFreeEconomyRooms, potencialGuests);

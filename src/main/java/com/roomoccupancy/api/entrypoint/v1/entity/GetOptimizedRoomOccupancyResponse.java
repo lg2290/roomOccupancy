@@ -18,7 +18,10 @@ public class GetOptimizedRoomOccupancyResponse {
 
 	private OptimizedRoomOccupancyEntity result;
 
-	private GetOptimizedRoomOccupancyResponse(Instant requestTimestamp, OptimizedRoomOccupancyEntity result) {
+	public GetOptimizedRoomOccupancyResponse() {
+	}
+
+	public GetOptimizedRoomOccupancyResponse(Instant requestTimestamp, OptimizedRoomOccupancyEntity result) {
 		this.requestTimestamp = requestTimestamp;
 		this.result = result;
 	}

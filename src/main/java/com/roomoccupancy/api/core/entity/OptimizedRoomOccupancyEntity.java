@@ -14,6 +14,9 @@ public class OptimizedRoomOccupancyEntity {
 
 	private RoomCategoryOccupancyEntity economyOccupancy;
 
+	public OptimizedRoomOccupancyEntity() {
+	}
+
 	public OptimizedRoomOccupancyEntity(RoomCategoryOccupancyEntity premiumOccupancy,
 			RoomCategoryOccupancyEntity economyOccupancy) {
 		this.premiumOccupancy = premiumOccupancy;

@@ -13,6 +13,9 @@ public class RoomCategoryOccupancyEntity {
 
 	private Integer generatedIncome;
 
+	public RoomCategoryOccupancyEntity() {
+	}
+
 	public RoomCategoryOccupancyEntity(Integer numberOfOccupiedRooms, Integer generatedIncome) {
 		this.generatedIncome = generatedIncome;
 		this.numberOfOccupiedRooms = numberOfOccupiedRooms;
