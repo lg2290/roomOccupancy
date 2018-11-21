@@ -17,7 +17,7 @@ import com.roomoccupancy.api.core.usecase.GetOptimizedRoomOccupancyUseCase;
 import com.roomoccupancy.api.entrypoint.v1.entity.GetOptimizedRoomOccupancyResponse;
 
 /**
- * Unit tests for the GetOptimizedRoomOccupancyEntrypoint
+ * Unit tests for the {@link GetOptimizedRoomOccupancyEntrypoint}
  * 
  * @author luis
  *
