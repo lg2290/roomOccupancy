@@ -17,6 +17,8 @@ The API makes the division of guests across the free rooms, in a way that:
 * Clients willing to pay less than 100 may get Premium rooms, if
 	* All the Economy Rooms are allocated
 	* There are free Premium Rooms after all the clients paying 100 or more got rooms
+	
+The response contains the number of occupied rooms, and how much money it will generated, separated by category
 
 ### Example
 Request:
