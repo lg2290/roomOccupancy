@@ -31,7 +31,26 @@ public class GetOptimizedRoomOccupancyUseCaseTest {
 
 		callOptimizedRoomOccupancyAndAssertBusinessException(numberOfFreePremiumRooms, numberOfFreeEconomyRooms,
 				potencialGuests, "The potential guests array is required.");
+	}
 
+	@Test
+	public void getOptimizedRoomOccupancy_potentialGuestsArrayWithNullItem_throwBusinessException() {
+		Integer numberOfFreePremiumRooms = 1;
+		Integer numberOfFreeEconomyRooms = 1;
+		Integer[] potencialGuests = { 100, 541, 43, null, 124 };
+
+		callOptimizedRoomOccupancyAndAssertBusinessException(numberOfFreePremiumRooms, numberOfFreeEconomyRooms,
+				potencialGuests, "The value that a guest is willing to pay must be a valid positive Integer");
+	}
+
+	@Test
+	public void getOptimizedRoomOccupancy_potentialGuestsArrayWithNegativeItem_throwBusinessException() {
+		Integer numberOfFreePremiumRooms = 1;
+		Integer numberOfFreeEconomyRooms = 1;
+		Integer[] potencialGuests = { 100, 541, 43, -1, 124 };
+
+		callOptimizedRoomOccupancyAndAssertBusinessException(numberOfFreePremiumRooms, numberOfFreeEconomyRooms,
+				potencialGuests, "The value that a guest is willing to pay must be a valid positive Integer");
 	}
 
 	@Test
@@ -71,7 +90,6 @@ public class GetOptimizedRoomOccupancyUseCaseTest {
 
 		callOptimizedRoomOccupancyAndAssertBusinessException(numberOfFreePremiumRooms, numberOfFreeEconomyRooms,
 				POTENTIAL_GUESTS, "The number of free Premium rooms must be zero or greater.");
-
 	}
 
 	@Test

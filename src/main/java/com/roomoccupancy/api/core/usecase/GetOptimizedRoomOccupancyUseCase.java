@@ -35,6 +35,8 @@ public class GetOptimizedRoomOccupancyUseCase {
 
 	private static final String ERROR_NEGATIVE_FREE_PREMIUM_ROOMS = "The number of free Premium rooms must be zero or greater.";
 
+	private static final String ERROR_NULL_OR_NEGATIVE_GUEST_OFFER = "The value that a guest is willing to pay must be a valid positive Integer";
+
 	/**
 	 * Method that optimizes the division of potential guests on the free rooms
 	 * available, taking into account the amount of money that they are willing to
@@ -107,6 +109,11 @@ public class GetOptimizedRoomOccupancyUseCase {
 		}
 
 		List<Integer> potencialGuestsList = Arrays.asList(potencialGuests);
+
+		if (potencialGuestsList.stream().anyMatch(g -> (Objects.isNull(g) || ZERO.compareTo(g) > ZERO))) {
+			throw new BusinessException(ERROR_NULL_OR_NEGATIVE_GUEST_OFFER);
+		}
+
 		potencialGuestsList.sort(Collections.reverseOrder());
 
 		return potencialGuestsList;
