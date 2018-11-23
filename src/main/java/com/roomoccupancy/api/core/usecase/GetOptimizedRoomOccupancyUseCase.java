@@ -63,22 +63,24 @@ public class GetOptimizedRoomOccupancyUseCase {
 		Integer numberOfPotentialEconomyGuests = ((Long) orderedPotencialGuests.stream()
 				.filter(this::isPotentialGuestForEconomyRoom).count()).intValue();
 
-		Integer numberOfEconomyGuests = Math.min(numberOfFreeEconomyRooms, numberOfPotentialEconomyGuests);
+		Integer numberOfAllocatedEconomyGuests = Math.min(numberOfFreeEconomyRooms, numberOfPotentialEconomyGuests);
 
 		Integer numberOfPotentialPremiumGuests = potencialGuests.length - numberOfPotentialEconomyGuests;
 
-		Integer numberOfPotentialEconomyGuestsWithoutRoom = numberOfPotentialEconomyGuests - numberOfEconomyGuests;
+		Integer numberOfPotentialEconomyGuestsWithoutRoom = numberOfPotentialEconomyGuests
+				- numberOfAllocatedEconomyGuests;
 
-		Integer numberOfPremiumGuests = getNumberOfPremiumGuests(numberOfFreePremiumRooms,
+		Integer numberOfAllocatedPremiumGuests = getNumberOfAllocatedPremiumGuests(numberOfFreePremiumRooms,
 				numberOfPotentialPremiumGuests, numberOfPotentialEconomyGuestsWithoutRoom);
 
 		RoomCategoryOccupancyEntity premiumRoomsOccupancy = getRoomOccupancyForPremiumGuests(orderedPotencialGuests,
-				numberOfPremiumGuests.intValue());
+				numberOfAllocatedPremiumGuests.intValue());
 
-		Integer numberOfGuestsForPremiumRooms = Math.max(numberOfPremiumGuests, numberOfPotentialPremiumGuests);
+		Integer numberOfGuestsDisallowedForEconomyRooms = Math.max(numberOfAllocatedPremiumGuests,
+				numberOfPotentialPremiumGuests);
 
 		RoomCategoryOccupancyEntity economyRoomsOccupancy = getRoomOccupancyForEconomyGuests(orderedPotencialGuests,
-				numberOfEconomyGuests, numberOfGuestsForPremiumRooms);
+				numberOfAllocatedEconomyGuests, numberOfGuestsDisallowedForEconomyRooms);
 
 		return new OptimizedRoomOccupancyEntity(premiumRoomsOccupancy, economyRoomsOccupancy);
 	}
@@ -131,10 +133,10 @@ public class GetOptimizedRoomOccupancyUseCase {
 	}
 
 	private RoomCategoryOccupancyEntity getRoomOccupancyForEconomyGuests(List<Integer> orderedPotencialGuests,
-			Integer numberOfEconomyGuests, Integer numberOfGuestsForPremiumRooms) {
+			Integer numberOfAllocatedEconomyGuests, Integer numberOfGuestsDisallowedForEconomyRooms) {
 
-		List<Integer> economyRoomsGuests = orderedPotencialGuests.subList(numberOfGuestsForPremiumRooms,
-				numberOfGuestsForPremiumRooms + numberOfEconomyGuests);
+		List<Integer> economyRoomsGuests = orderedPotencialGuests.subList(numberOfGuestsDisallowedForEconomyRooms,
+				numberOfGuestsDisallowedForEconomyRooms + numberOfAllocatedEconomyGuests);
 
 		return getRoomCategoryOccupancyFromGuests(economyRoomsGuests);
 	}
@@ -143,18 +145,18 @@ public class GetOptimizedRoomOccupancyUseCase {
 		return new RoomCategoryOccupancyEntity(guests.size(), guests.stream().mapToInt(Integer::intValue).sum());
 	}
 
-	private Integer getNumberOfPremiumGuests(Integer numberOfFreePremiumRooms, Integer numberOfPotentialPremiumGuests,
-			Integer numberOfPotentialEconomyGuestsWithoutRoom) {
-		Integer numberOfPremiumGuests = Math.min(numberOfFreePremiumRooms, numberOfPotentialPremiumGuests);
+	private Integer getNumberOfAllocatedPremiumGuests(Integer numberOfFreePremiumRooms,
+			Integer numberOfPotentialPremiumGuests, Integer numberOfPotentialEconomyGuestsWithoutRoom) {
+		Integer numberOfAllocatedPremiumGuests = Math.min(numberOfFreePremiumRooms, numberOfPotentialPremiumGuests);
 
-		Integer numberOfPremiumRoomsAvailableForEconomyGuests = numberOfFreePremiumRooms - numberOfPremiumGuests;
+		Integer numberOfPremiumRoomsAvailableForEconomyGuests = numberOfFreePremiumRooms - numberOfAllocatedPremiumGuests;
 
 		if ((numberOfPotentialEconomyGuestsWithoutRoom > 0) && (numberOfPremiumRoomsAvailableForEconomyGuests > 0)) {
-			numberOfPremiumGuests += Math.min(numberOfPotentialEconomyGuestsWithoutRoom,
+			numberOfAllocatedPremiumGuests += Math.min(numberOfPotentialEconomyGuestsWithoutRoom,
 					numberOfPremiumRoomsAvailableForEconomyGuests);
 		}
 
-		return numberOfPremiumGuests;
+		return numberOfAllocatedPremiumGuests;
 	}
 
 }
